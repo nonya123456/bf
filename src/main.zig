@@ -8,9 +8,6 @@ pub fn main(init: std.process.Init) !void {
 
     const allocator = da.allocator();
 
-    var interpreter: bf.Interpreter = .init();
-    defer interpreter.deinit(allocator);
-
     const args = try init.minimal.args.toSlice(allocator);
     defer allocator.free(args);
 
@@ -19,6 +16,9 @@ pub fn main(init: std.process.Init) !void {
     }
     const src = try std.Io.Dir.cwd().readFileAlloc(init.io, args[1], allocator, .unlimited);
     defer allocator.free(src);
+
+    var interpreter: bf.Interpreter = .init();
+    defer interpreter.deinit(allocator);
 
     try interpreter.compile(allocator, src);
 
