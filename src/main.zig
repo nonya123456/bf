@@ -11,7 +11,9 @@ pub fn main() !void {
     var interpreter: bf.Interpreter = .init();
     defer interpreter.deinit(allocator);
 
-    _ = interpreter.dp + 1;
+    const hello_world_src: []const u8 = ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.";
 
-    std.debug.print("Hello, World {}\n", .{interpreter.dp});
+    try interpreter.compile(allocator, hello_world_src);
+
+    try interpreter.execute(allocator);
 }
