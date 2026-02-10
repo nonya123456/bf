@@ -1,6 +1,5 @@
 const std = @import("std");
 const Allocator = std.mem.Allocator;
-const assert = std.debug.assert;
 
 const Operator = enum {
     inc_dp,
@@ -78,7 +77,6 @@ pub const Interpreter = struct {
                         .operand = jmp_pc,
                     });
 
-                    assert(jmp_pc < self.prog.items.len);
                     self.prog.items[jmp_pc].operand = pc;
                 },
                 ',' => {
@@ -114,10 +112,18 @@ pub const Interpreter = struct {
             const ins = self.prog.items[pc];
             switch (ins.operator) {
                 .inc_dp => {
-                    dp += 1;
+                    if (dp == data.len - 1) {
+                        dp = 0;
+                    } else {
+                        dp += 1;
+                    }
                 },
                 .dec_dp => {
-                    dp -= 1;
+                    if (dp == 0) {
+                        dp = data.len - 1;
+                    } else {
+                        dp -= 1;
+                    }
                 },
                 .inc_val => {
                     data[dp] +%= 1;
