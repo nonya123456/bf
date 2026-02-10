@@ -34,9 +34,9 @@ pub const Interpreter = struct {
         var stack: std.ArrayList(usize) = .empty;
         defer stack.deinit(allocator);
 
-        var pc: usize = 0;
-        while (pc < src.len) : (pc += 1) {
-            switch (src[pc]) {
+        var i: usize = 0;
+        while (i < src.len) : (i += 1) {
+            switch (src[i]) {
                 '>' => {
                     try self.prog.append(allocator, .{
                         .operator = .inc_dp,
@@ -66,7 +66,7 @@ pub const Interpreter = struct {
                         .operator = .jmp_fwd,
                         .operand = null,
                     });
-                    try stack.append(allocator, pc);
+                    try stack.append(allocator, self.prog.items.len - 1);
                 },
                 ']' => {
                     const jmp_pc = stack.pop() orelse return error.UnmatchedBracket;
@@ -75,7 +75,7 @@ pub const Interpreter = struct {
                         .operand = jmp_pc,
                     });
 
-                    self.prog.items[jmp_pc].operand = pc;
+                    self.prog.items[jmp_pc].operand = self.prog.items.len - 1;
                 },
                 ',' => {
                     try self.prog.append(allocator, .{
