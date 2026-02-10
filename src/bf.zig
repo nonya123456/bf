@@ -131,6 +131,7 @@ pub const Interpreter = struct {
                 },
                 .out => {
                     try writer.writeByte(data[dp]);
+                    try writer.flush();
                 },
                 .in => {
                     data[dp] = try reader.takeByte();
@@ -147,7 +148,5 @@ pub const Interpreter = struct {
                 },
             }
         }
-
-        try writer.flush();
     }
 };

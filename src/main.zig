@@ -24,7 +24,6 @@ pub fn main(init: std.process.Init) !void {
 
     var stdout_buf: [4096]u8 = undefined;
     var file_writer = std.Io.File.stdout().writer(init.io, &stdout_buf);
-    defer _ = file_writer.flush() catch {};
 
     var stdin_buf: [4096]u8 = undefined;
     var file_reader = std.Io.File.stdin().reader(init.io, &stdin_buf);
