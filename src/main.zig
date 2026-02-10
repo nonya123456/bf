@@ -11,8 +11,15 @@ pub fn main(init: std.process.Init) !void {
     var interpreter: bf.Interpreter = .init();
     defer interpreter.deinit(allocator);
 
-    //const src: []const u8 = ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+."; // Hello, World
-    const src: []const u8 = ",[.,]"; // Echo
+    const args = try init.minimal.args.toSlice(allocator);
+    defer allocator.free(args);
+
+    if (args.len < 2) {
+        return error.MissingArgument;
+    }
+    const src = try std.Io.Dir.cwd().readFileAlloc(init.io, args[1], allocator, .unlimited);
+    defer allocator.free(src);
+
     try interpreter.compile(allocator, src);
 
     var stdout_buf: [4096]u8 = undefined;
