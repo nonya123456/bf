@@ -20,19 +20,17 @@ const Instruction = struct {
 pub const Interpreter = struct {
     prog: std.ArrayList(Instruction),
 
-    const Self = @This();
-
-    pub fn init() Self {
+    pub fn init() Interpreter {
         return .{
             .prog = .empty,
         };
     }
 
-    pub fn deinit(self: *Self, allocator: Allocator) void {
+    pub fn deinit(self: *Interpreter, allocator: Allocator) void {
         self.prog.deinit(allocator);
     }
 
-    pub fn compile(self: *Self, allocator: Allocator, src: []const u8) !void {
+    pub fn compile(self: *Interpreter, allocator: Allocator, src: []const u8) !void {
         var stack: std.ArrayList(usize) = .empty;
         defer stack.deinit(allocator);
 
@@ -100,7 +98,7 @@ pub const Interpreter = struct {
         }
     }
 
-    pub fn execute(self: *Self, allocator: Allocator, writer: *std.Io.Writer, reader: *std.Io.Reader) !void {
+    pub fn execute(self: *const Interpreter, allocator: Allocator, writer: *std.Io.Writer, reader: *std.Io.Reader) !void {
         const data = try allocator.alloc(u8, 30000);
         defer allocator.free(data);
 
