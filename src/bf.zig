@@ -139,12 +139,12 @@ pub const Interpreter = struct {
                 },
                 .jmp_fwd => {
                     if (data[dp] == 0) {
-                        pc = ins.operand orelse std.debug.panic("", .{});
+                        pc = ins.operand orelse unreachable;
                     }
                 },
                 .jmp_bck => {
                     if (data[dp] > 0) {
-                        pc = ins.operand orelse std.debug.panic("", .{});
+                        pc = ins.operand orelse unreachable;
                     }
                 },
             }
