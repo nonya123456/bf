@@ -11,12 +11,16 @@ pub fn main(init: std.process.Init) !void {
     var interpreter: bf.Interpreter = .init();
     defer interpreter.deinit(allocator);
 
-    const hello_world_src: []const u8 = ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+.";
-    try interpreter.compile(allocator, hello_world_src);
+    //const src: []const u8 = ">++++++++[<+++++++++>-]<.>++++[<+++++++>-]<+.+++++++..+++.>>++++++[<+++++++>-]<++.------------.>++++++[<+++++++++>-]<+.<.+++.------.--------.>>>++++[<++++++++>-]<+."; // Hello, World
+    const src: []const u8 = ",[.,]"; // Echo
+    try interpreter.compile(allocator, src);
 
     var stdout_buf: [4096]u8 = undefined;
     var file_writer = std.Io.File.stdout().writer(init.io, &stdout_buf);
     defer _ = file_writer.flush() catch {};
 
-    try interpreter.execute(allocator, &file_writer.interface);
+    var stdin_buf: [4096]u8 = undefined;
+    var file_reader = std.Io.File.stdin().reader(init.io, &stdin_buf);
+
+    try interpreter.execute(allocator, &file_writer.interface, &file_reader.interface);
 }

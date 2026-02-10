@@ -100,7 +100,7 @@ pub const Interpreter = struct {
         }
     }
 
-    pub fn execute(self: *Self, allocator: Allocator, writer: *std.Io.Writer) !void {
+    pub fn execute(self: *Self, allocator: Allocator, writer: *std.Io.Writer, reader: *std.Io.Reader) !void {
         const data = try allocator.alloc(u8, 30000);
         defer allocator.free(data);
 
@@ -135,7 +135,7 @@ pub const Interpreter = struct {
                     try writer.writeByte(data[dp]);
                 },
                 .in => {
-                    std.debug.panic("", .{});
+                    data[dp] = try reader.takeByte();
                 },
                 .jmp_fwd => {
                     if (data[dp] == 0) {
